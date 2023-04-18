@@ -18,24 +18,30 @@ The functionality within this repository uses (or will use) the following toolse
 | Version | Description |
 | :-----: | ----------- |
 | 0       | Initial Publication of README and proposed roadmap |
+| 1       | Release of Data Aggregation code |
 
 ## Roadmap
 Below is a listing of capabilities that I expect to add using the code/tools in this repository:
 
 ### Data Aggregation
 (Priority #1 - This data will be used to support all subsequent functionality.))
-- **Extract extended data from TroopTrack** Use the API and scraping from the web interface using Puppeteer to extract and restructure data from TroopTrack.  Data to be aggregated includes:
+- [x] **Extract extended data from TroopTrack** Use the API and scraping from the web interface using Puppeteer to extract and restructure data from TroopTrack.  Data to be aggregated includes:
     - API:
-        - User Details
-        - Detailed progress on rank requirements
+        - [x] User Details
+        - [x] Detailed progress on rank requirements
+        - [x] Pull requirement description from TroopTrack
+        - [x] Push overall completion date down to incomplete requirements
     - Web Scraping:
-        - User ID
-        - Health Form dates
-        - Adult Drivers License (existence, not specific data)
-        - Merit Badges Counseled
+        - [x] User ID
+        - [x] Health Form dates
+        - [x] Merit Badges Counseled
+        - [x] Adult Drivers License (existence, not specific data)
+        - [x] Date Joined Troop
+        - [x] BSA ID Number
 
 ### Workflows
-- **Merit Badge Blue Card Approval Workflow**: Members request Scoutmaster approval for a Blue Card.  The workflow will allow the Scoutmaster to:
+- [ ] **Send TroopTrack Email Workflow**:  Standard function to enable sending HTML messages via TroopTrack interface
+- [ ] **Merit Badge Blue Card Approval Workflow**: Members request Scoutmaster approval for a Blue Card.  The workflow will allow the Scoutmaster to:
     - Decide whether to approve the request
     - If approved:
         - Update TroopTrack to show the Scout has started working on the Merit Badge
@@ -43,29 +49,30 @@ Below is a listing of capabilities that I expect to add using the code/tools in 
         - Generate an electronic blue card 
         - Queue a blue card to be printed before the next meeting
     - Email the Scout with approval result and additional information (including PDF of blue card) via the TroopTrack email system
-- **Bulk Print Blue Cards**: Print queued blue cards in bulk before a Troop Meeting
-- **Request a Scoutmaster Conference / Board of Review Workflow**
-- **Request Service Project Approval**
-- **Monthly Exception Reporting**: Check data for each household and send an email when the following issues / discrepancies exist:
+- [ ] **Bulk Print Blue Cards**: Print queued blue cards in bulk before a Troop Meeting
+- [ ] **Request a Scoutmaster Conference / Board of Review Workflow**
+- [ ] **Request Service Project Approval**
+- [ ] **Monthly Exception Reporting**: Check data for each household and send an email when the following issues / discrepancies exist:
     - Health Form expired / expiring within 30 days
     - Negative Money Account / Money Account below desired threshold (configurable)
     - Adults with accounts that are not configured to receive text messages from the Troop
     - Adults / Scouts with shared email addresses.
     - Adults without BSA ID number assigned or BSA ID number without leadership position assigned (We use this information to determine if the adult is eligible to campout overnight with Scouts after 9/1/2023)
-- **Campout / Event Workflow**: 
+- [ ] **Campout / Event Workflow**: 
     - Email each household who has a member attending the event/activity without a current health form on file.
     - Create text message chain for adults who will be attending the event.
-- **Returning from Event Text Messages**: Generate a text message to be sent by TroopTrack when the Troop is departing an event (includes an ETA for arriving at the pre-defined arrival point.)
-- **Troop Election Workflow**: Make it easy to update Troop Positions and permissions within TroopTrack:
+- [ ] **Returning from Event Text Messages**: Generate a text message to be sent by TroopTrack when the Troop is departing an event (includes an ETA for arriving at the pre-defined arrival point.)
+- [ ] **Troop Election Workflow**: Make it easy to update Troop Positions and permissions within TroopTrack:
     - Update TroopTrack to end-date Scouts who are no longer holding their current position
     - Update TroopTrack to reflect the Scouts' newly elected positions
     - Adjust the Scouts' permisions in TroopTrack as appropriate.
-- **Adult Leader Permissions**: Automatically set the adult leader's TroopTrack permissions based on their current position (or lack of position)
+- [ ] **Adult Leader Permissions**: Automatically set the adult leader's TroopTrack permissions based on their current position (or lack of position)
 
 ### Patrol Leaders Council (PLC)
-- **Prepare PLC Meeting Agenda**:  Extract TroopTrack Calendar information about events between the last and next PLC meetings to allow for more efficient planning & Start/Stop/Continue activities.  
-- **Rank Advancement Heat Map**:  Help the PLC to identify potential meeting activities by generating a visual heatmap of incomplete advancement across all Scouts.
+- [ ] **Prepare PLC Meeting Agenda**:  Extract TroopTrack Calendar information about events between the last and next PLC meetings to allow for more efficient planning & Start/Stop/Continue activities.  
+- [ ] **Rank Advancement Heat Map**:  Help the PLC to identify potential meeting activities by generating a visual heatmap of incomplete advancement across all Scouts.
 
-### BSA Reporting Tool Support
-- **Reconcile TroopTrack and Internet Advancement Reporting**: We occasionally note an issue between what is loaded into TroopTrack and Internet Advancement when importing from Black Pug software.  This funcationality will identify potential discrepancies between the two systems to prevent incorrectly reporting advancement.
-- **Journey To Excellence Reporting**:  Extract data from TroopTrack to help complete annual Journey to Excellence reporting.
+### Reporting Tool
+- [ ] **Reconcile TroopTrack and Internet Advancement Reporting**: We occasionally note an issue between what is loaded into TroopTrack and Internet Advancement when importing from Black Pug software.  This funcationality will identify potential discrepancies between the two systems to prevent incorrectly reporting advancement.
+- [ ] **Journey To Excellence Reporting**:  Extract data from TroopTrack to help complete annual Journey to Excellence reporting.
+- [ ] **Drivers License Report** - Pull listing of Drivers Licenses for adults attending event (useful for gathering information when visiting military bases or other secure locations requiring identification cards)

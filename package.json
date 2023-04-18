@@ -1,0 +1,15 @@
+{
+  "name": "extended-trooptrack-capabilities",
+  "version": "1.0.0",
+  "description": "This respository contains tools to extend the capabilities of TroopTrack to add additional functionality. The intention is to support processes at Troop 457 in Zelienople, PA; however any TroopTrack user may utilize these tools to support their own Troops.",
+  "main": "TTDataAggregation.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tim Maloney",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "puppeteer": "^19.9.1"
+  }
+}
