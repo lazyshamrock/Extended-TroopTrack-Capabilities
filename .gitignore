@@ -1,2 +1,9 @@
 
 .DS_Store
+.env
+node_modules/
+aggregatedData.json
+templates/Health Form Email.html
+templates/MB EMAIL.html
+templates/MB Meeting Invite Template.html
+templates/Standard Email Template.html
