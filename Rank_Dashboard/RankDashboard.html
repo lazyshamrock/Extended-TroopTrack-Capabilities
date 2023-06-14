@@ -1,0 +1,161 @@
+<html>
+    <title>Troop 457 Rank Advancement Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 4;
+            font-style: normal;
+            text-align: left;
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+            line-height: normal;
+            }
+
+            h1 {
+            background:#CE1126;
+            color: white;
+            font-size: 14pt;
+            padding:5pt;
+            line-height:normal;
+            text-transform: uppercase;
+            }
+
+            h2 {
+            font-size: 14pt;
+            text-transform: uppercase;
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+            line-height: normal;
+            }
+
+            /* Container holding the image and the text */
+            .container {
+            position: relative;
+            color: white;
+            }
+
+            /* Bottom left text */
+            .bottom-left {
+            position: absolute;
+            bottom: 8px;
+            left: 16px;
+            text-align: left;
+            }
+
+            /* Top left text */
+            .top-left {
+            position: absolute;
+            top: 8px;
+            left: 16px;
+            text-align: left;
+            }
+
+            /* Top right text */
+            .top-right {
+            position: absolute;
+            top: 8px;
+            right: 16px;
+            text-align: right;
+            }
+
+            /* Bottom right text */
+            .bottom-right {
+            position: absolute;
+            bottom: 8px;
+            right: 16px;
+            text-align: right;
+            }
+
+            /* Centered text */
+            .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            }
+
+            .left-middle {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translate(0%, -50%);
+            text-align: left;
+            }
+
+            .right-middle {
+            position: absolute;
+            top: 50%;
+            right: 16px;
+            transform: translate(0%, -50%);
+            text-align: right;
+            }
+
+            th {
+            color: white;
+            background-color:#ce1126;
+            padding: 5px;
+            border: px solid black;
+            border-collapse: collapse;
+            text-align: center;
+            vertical-align: middle;
+            }
+            td {
+            color: black;
+            background-color:white;
+            padding: 5px;
+            border: px solid black;
+            border-collapse: collapse;
+            text-align: center;
+            vertical-align: middle;
+            }
+            .percent {
+                font-weight:bolder; 
+                font-size: calc(100% + 6vw);
+            }
+    </style>
+    <body onload="updateData()">
+        <table width="100%">
+            <tr>
+                <th style="font-weight:bold; font-size: x-large;">Troop 457 Rank Advancement Dashboard</th>
+            </tr>
+        </table>
+        <p><br></p>
+        <table width="100%">
+            <tr style="vertical-align:middle;">
+                <td width="70%" style="text-align:right">Select Patrol:</td>
+                <td width="20%" style="text-align:left;">
+                    <select name="patrolList" onChange="combo(this, 'demo')" width="100%">
+                    <option>All Scouts</option>
+                    </select>
+                </td>
+                <td width="10%" style="text-align:leftr"><button name="RefreshData" type="Button" onclick="RefreshMyData()">Refresh Data</button></td>
+            </tr>
+        </table>
+        <p><br></p>
+        <table id="DataTbl" width="100%">
+            <tr style="text-align: center; vertical-align: top;">
+                <th width="25%">Scout</th>
+                <th width="25%">Tenderfoot</th>
+                <th width="25%">Second Class</th>
+                <th width="25%">First Class</th>
+            </tr>
+        </table>
+
+        <table id="testTbl" width="100%" hidden="true">
+            <tr style="text-align: center; vertical-align: top;">
+                <td>Scout</td>
+            </tr>
+            <tr style="text-align: center; vertical-align: top;">
+                <td>Tenderfoot</td>
+            </tr>
+            <tr style="text-align: center; vertical-align: top;">
+                <td>Second Class</td>
+            </tr>
+            <tr style="text-align: center; vertical-align: top;">
+                <td>First Class</td>
+            </tr>
+        </table>
+        <script src="./RankDashboard.js"></script>
+    </body>
+</html>

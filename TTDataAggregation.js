@@ -1,13 +1,15 @@
-require('dotenv').config();
+// ===== LINK TO RELATED INCLUDES =====
+import dotenv from 'dotenv'; // Import the dotenv library to load environment variables from a .env file
+dotenv.config({ path: '.env'});
+import fs from 'fs';
+import puppeteer from 'puppeteer';
 
-const fs = require('fs');
-const puppeteer = require('puppeteer');
+// ===== CREATE COMMON VARIABLES =====
 const ttPartnerToken = process.env.ttPartnerToken;
 const ttUsername = process.env.ttUsername;
 const ttPwd = process.env.ttPwd;
 const ttURL = process.env.ttURL;
 var selectorID = 0;
-var filter = {};
 var rank_id = "";
 var req_id = "";
 
@@ -92,6 +94,9 @@ async function TT_API_Call(my_params,api_endpoint) {
 		}
 		return myHealthForms;
 	});
+
+	// ========== SCRAPE MOBILE CONFIG ==========
+	
 
 	// ========== GET DATA FROM TROOPTRACK API ==========
 	// GET TROOPTRACK SESSION TOKEN
