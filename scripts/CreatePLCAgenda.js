@@ -9,14 +9,8 @@ import {getThirdTuesdayDate} from "./support_functions/getThirdTuesdayDate.mjs";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // ===== CREATE TROOPTRACK OBJECT =====
-const ttConfig = {
-    ttPartnerToken: process.env.ttPartnerToken,
-    ttUsername: process.env.ttUsername,
-    ttPwd: process.env.ttPwd,
-    ttURL: process.env.ttURL
-};
-const tt = new TroopTrack(ttConfig);
-tt.getAggregatedData();
+const tt = new TroopTrack();
+await tt.getData(false);
 
 // ===== CREATE WORDPRESS OBJECT =====
 const wpCofig = {
@@ -79,7 +73,6 @@ for(let i=0;i<futureEventsList.length;i++){
 futureEvents = futureEvents + "</table>";
 
 // ===== GET PATROL LEADER LIST =====
-// var myPatrols = getPatrolList(aggregatedData);
 var patrols = tt.getPatrolList();
 var PL ='';
 for(let i = 0; i < patrols.length;i++){

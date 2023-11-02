@@ -77,7 +77,7 @@ export class TroopTrack {
     // Determine if data refresh has been requested
     if (!refreshData) {
       // refreshData is false - populate .date from aggregatedData.json file
-      this.data= JSON.parse(await readFile("aggregatedData.json", "utf8"));
+      this.data= JSON.parse(await readFile("./data/aggregatedData.json", "utf8"));
     } else {
       // refreshData is true - requery systems and update aggregatedData.json file.
 
@@ -301,7 +301,18 @@ export class TroopTrack {
         });
         userData.user.hasDL = (hasDL.trim() != '-');
 
+        // Get Joined on and BSA ID
         if(userData.user.scout) {
+          var htmlContent = await page.evaluate(() => {
+            document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(8) > div.card-body').innerHTML;
+          });
+        } else {
+          var htmlContent = await page.evaluate(() => {
+            document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(9) > div.card-body').innerHTML;
+          });
+        }
+
+        /* if(userData.user.scout) {
           userData.user.BSA_id = await page.evaluate(() => { 
             var bsaID = document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(8) > div.card-body > dd:nth-child(4)');
             bsaID = bsaID.innerHTML.trim();
@@ -325,12 +336,30 @@ export class TroopTrack {
             dtJoined = dtJoined.innerHTML.trim(); 
             return dtJoined.replace("Joined on ",""); 
           });
+
+          const htmlContent = `...`; // Your HTML content */ 
+
+          // Regex pattern for ID
+          const idRegex = /ID: (\d+)/;
+          // Regex pattern for Joined on date
+          const joinedOnRegex = /Joined on (\d{4}-\d{2}-\d{2})/;
+
+          // Extracting ID
+          const idMatch = htmlContent.match(idRegex);
+          userData.user.BSA_id = idMatch ? idMatch[1] : null;
+
+          // Extracting Joined on date
+          const joinedOnMatch = htmlContent.match(joinedOnRegex);
+          userData.user.date_joined = joinedOnMatch ? joinedOnMatch[1] : null;
+
+          console.log(`ID: ${id}, Joined on: ${joinedOnDate}`);
+
         }
         aggregatedData.push(userData.user);
       }
 
       // OUTPUT AGGREGATED DATA TO TEXT FILE AS JSON
-      writeFile('aggregatedData.json',JSON.stringify(aggregatedData), err => {
+      writeFile('./data/aggregatedData.json',JSON.stringify(aggregatedData), err => {
         if(err) {
           console.err;
           return;
@@ -342,7 +371,7 @@ export class TroopTrack {
     }
 
     // Get unique list of Household
-    const myHouseholds = this.data.map(item => item.households[0]);
+    /* const myHouseholds = this.data.map(item => item.households[0]);
     this.households = myHouseholds.filter((value, index) => {
       const _value = JSON.stringify(value);
       return index === myHouseholds.findIndex(obj => {
@@ -361,14 +390,15 @@ export class TroopTrack {
         }); //person.house.contains(currentHousehold);
       this.households[i].members = householdMembers;
     }
-  }
+  } */
 
   async getCalendar(startDate, endDate) {
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'X-Partner-Token': this.partnerToken,
-      'X-User-Token': await this.getToken()
+      'X-User-Token': await this.sessionToken
+      
     };
     var searchString = this.url + '/api/v1/events?start_on=' + startDate + '&end_on=' + endDate;
 
@@ -433,7 +463,7 @@ export class TroopTrack {
       const patrolValues = new Set();
       
       this.data.forEach((item) => {
-          if ((item.patrol !== undefined) && (item.patrol !== "Inactive") && (item.patrol !== "Unassigned") && (item.patrol !== "Eagle Patrol (inactive)") && (item.patrol !== "Rocking Chair Patrol"))
+          if ((item.patrol !== undefined) && (item.patrol !== "Inactive") && (item.patrol !== "Unassigned") && (item.patrol !== "Eagle Patrol (inactive)") && (item.patrol !== "Rocking Chair Patrol") && (item.patrol !== "Unregistered Adults"))
           { patrolValues.add(item.patrol); }
       });
   

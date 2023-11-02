@@ -241,6 +241,7 @@ async function TT_API_Call(my_params,api_endpoint) {
 	}
 
 	// OUTPUT AGGREGATED DATA TO TEXT FILE AS JSON
+	// fs.writeFile('../data/aggregatedData.json',JSON.stringify(aggregatedData), err => {
 	fs.writeFile('aggregatedData.json',JSON.stringify(aggregatedData), err => {
 		if(err) {
 			console.err;
