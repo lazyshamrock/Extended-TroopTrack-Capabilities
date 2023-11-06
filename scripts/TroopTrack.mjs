@@ -302,61 +302,58 @@ export class TroopTrack {
         userData.user.hasDL = (hasDL.trim() != '-');
 
         // Get Joined on and BSA ID
+        var htmlContent;
         if(userData.user.scout) {
-          var htmlContent = await page.evaluate(() => {
-            document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(8) > div.card-body').innerHTML;
+          htmlContent = await page.evaluate(() => {
+            return document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(8) > div.card-body').innerHTML;
           });
         } else {
-          var htmlContent = await page.evaluate(() => {
-            document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(9) > div.card-body').innerHTML;
+          htmlContent = await page.evaluate(() => {
+            return document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(9) > div.card-body').innerHTML;
           });
         }
 
-        /* if(userData.user.scout) {
-          userData.user.BSA_id = await page.evaluate(() => { 
-            var bsaID = document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(8) > div.card-body > dd:nth-child(4)');
-            bsaID = bsaID.innerHTML.trim();
-            return bsaID.replace("ID: ",""); 
-          });
-      
-          userData.user.date_joined = await page.evaluate(() => { 
-            var dtJoined = document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(8) > div.card-body > dd:nth-child(5)')
-            dtJoined = dtJoined.innerHTML.trim(); 
-            return dtJoined.replace("Joined on ",""); 
-          });
-        } else {
-          userData.user.BSA_id = await page.evaluate(() => { 
-            var bsaID = document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(9) > div.card-body > dd:nth-child(4)');
-            bsaID = bsaID.innerHTML.trim();
-            return bsaID.replace("ID: ",""); 
-          });
-      
-          userData.user.date_joined = await page.evaluate(() => { 
-            var dtJoined = document.querySelector('#main-container > div.border.border-top-0 > div > div > div:nth-child(9) > div.card-body > dd:nth-child(5)')
-            dtJoined = dtJoined.innerHTML.trim(); 
-            return dtJoined.replace("Joined on ",""); 
-          });
+        // Regex pattern for ID
+        const idRegex = /ID: (\d+)/;
+        // Regex pattern for Joined on date
+        const joinedOnRegex = /Joined on (\d{4}-\d{2}-\d{2})/;
 
-          const htmlContent = `...`; // Your HTML content */ 
+        // Extracting ID
+        const idMatch = htmlContent.match(idRegex);
+        userData.user.BSA_id = idMatch ? idMatch[1] : null;
 
-          // Regex pattern for ID
-          const idRegex = /ID: (\d+)/;
-          // Regex pattern for Joined on date
-          const joinedOnRegex = /Joined on (\d{4}-\d{2}-\d{2})/;
+        // Extracting Joined on date
+        const joinedOnMatch = htmlContent.match(joinedOnRegex);
+        userData.user.date_joined = joinedOnMatch ? joinedOnMatch[1] : null;
 
-          // Extracting ID
-          const idMatch = htmlContent.match(idRegex);
-          userData.user.BSA_id = idMatch ? idMatch[1] : null;
-
-          // Extracting Joined on date
-          const joinedOnMatch = htmlContent.match(joinedOnRegex);
-          userData.user.date_joined = joinedOnMatch ? joinedOnMatch[1] : null;
-
-          console.log(`ID: ${id}, Joined on: ${joinedOnDate}`);
-
-        }
         aggregatedData.push(userData.user);
       }
+
+      //Refactor data to start with Households then Users
+      // Create a map to hold unique households by household_id, including household members
+      const uniqueHouseholds = new Map();
+
+      aggregatedData.forEach(user => {
+        if (user.households) {
+          user.households.forEach(household => {
+            // Create a copy of the user object without the households key
+            const userWithoutHouseholds = { ...user };
+            delete userWithoutHouseholds.households; // remove the households key
+            
+            if (uniqueHouseholds.has(household.household_id)) {
+              // If household already exists, push the current user to the household_members array
+              uniqueHouseholds.get(household.household_id).household_members.push(userWithoutHouseholds);
+            } else {
+              // If household does not exist, create it and add the current user to household_members
+              household.household_members = [userWithoutHouseholds];
+              uniqueHouseholds.set(household.household_id, household);
+            }
+          });
+        }
+      });
+
+      // Convert the map to an array of household objects
+      aggregatedData = Array.from(uniqueHouseholds.values());
 
       // OUTPUT AGGREGATED DATA TO TEXT FILE AS JSON
       writeFile('./data/aggregatedData.json',JSON.stringify(aggregatedData), err => {
@@ -369,28 +366,7 @@ export class TroopTrack {
       await browser.close();
       this.data = aggregatedData;
     }
-
-    // Get unique list of Household
-    /* const myHouseholds = this.data.map(item => item.households[0]);
-    this.households = myHouseholds.filter((value, index) => {
-      const _value = JSON.stringify(value);
-      return index === myHouseholds.findIndex(obj => {
-        return JSON.stringify(obj) === _value;
-      });
-    });
-
-    // Add Household Members to list
-    for(let i=0; i<this.households.length;i++){
-      var currentHousehold = this.households[i].household_id;
-      var householdMembers = this.data.filter(person => {
-        const myPeople = person.households.filter(personsHousehold => {
-            return personsHousehold.household_id == currentHousehold;
-          })
-        return myPeople.length>0;
-        }); //person.house.contains(currentHousehold);
-      this.households[i].members = householdMembers;
-    }
-  } */
+  } 
 
   async getCalendar(startDate, endDate) {
     var headers = {
