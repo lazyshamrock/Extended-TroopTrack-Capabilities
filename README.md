@@ -69,7 +69,9 @@ Below is a listing of capabilities that I expect to add using the code/tools in 
 - [ ] **Adult Leader Permissions**: Automatically set the adult leader's TroopTrack permissions based on their current position (or lack of position)
 
 ### Patrol Leaders Council (PLC)
-- [ ] **Prepare PLC Meeting Agenda**:  Extract TroopTrack Calendar information about events between the last and next PLC meetings to allow for more efficient planning & Start/Stop/Continue activities.  
+- [ ] **Prepare PLC & Parents Meeting Agendas**:  Extract TroopTrack Calendar information about events between the last and next PLC meetings to allow for more efficient planning & Start/Stop/Continue activities.  Populates a Custom Post Type on Wordpress website for meetings.
+    - [x] PLC Meeting
+    - [ ] Parent Meeting
 - [ ] **Rank Advancement Heat Map**:  Help the PLC to identify potential meeting activities by generating a visual heatmap of incomplete advancement across all Scouts.
 
 ### Reporting Tool

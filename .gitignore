@@ -7,3 +7,12 @@ templates/Health Form Email.html
 templates/MB EMAIL.html
 templates/MB Meeting Invite Template.html
 templates/Standard Email Template.html
+.vscode/settings.json
+PLC_Agenda/test.html
+PLC_Agenda/test.json
+test.js
+TESTING.js
+templates/tmp.html
+data/aggregatedData.json
+Test_Run.js
+WORKING/

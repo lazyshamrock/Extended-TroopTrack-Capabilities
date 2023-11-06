@@ -1,0 +1,34 @@
+[
+  {
+    "Automation": "Annual Recharter",
+    "Date_Run": "2000-01-01"
+  },
+  {
+    "Automation": "Semi-Annual Data Check",
+    "Date_Run": "2000-01-01"
+  },
+  {
+    "Automation": "Pre Elections",
+    "Date_Run": "2000-01-01"
+  },
+  {
+    "Automation": "Post Elections",
+    "Date_Run": "2000-01-01"
+  },
+  {
+    "Automation": "Monthly Tasks",
+    "Date_Run": "2000-01-01"
+  },
+  {
+    "Automation": "PLC Preparation",
+    "Date_Run": "2000-01-01"
+  },
+  {
+    "Automation": "Pre Campout",
+    "Date_Run": "2000-01-01"
+  },
+  {
+    "Automation": "Post Campout",
+    "Date_Run": "2000-01-01"
+  },
+]
