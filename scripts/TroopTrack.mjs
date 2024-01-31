@@ -5,6 +5,7 @@ import { writeFile } from 'fs';           // Used to write aggregatedData.json f
 import dotenv from 'dotenv';              // Used to load environment variables from a .env file
 dotenv.config({ path: '.env'});           // Populate dotenv with environment data from .env file
 import puppeteer from 'puppeteer';        // Used to control Chrome to scrape data not available via the TroopTrack API
+import clipboardy from 'clipboardy';
 
 export class TroopTrack {
   constructor(refreshData) {
@@ -40,7 +41,7 @@ export class TroopTrack {
       }
       return await response.data;
     } catch (error) {
-      throw new Error(`Error obtaining TroopTrack API Data: ${error}`);
+      throw new Error(error);
     }
   }
 
@@ -70,6 +71,7 @@ export class TroopTrack {
           'X-User-Password': this.password
         }
       };
+      
       var result = await this.call_API('post','/api/v1/tokens',my_params);
       this.sessionToken = await result.users[0].token;
     } 
@@ -77,7 +79,7 @@ export class TroopTrack {
     // Determine if data refresh has been requested
     if (!refreshData) {
       // refreshData is false - populate .date from aggregatedData.json file
-      this.data= JSON.parse(await readFile("./data/aggregatedData.json", "utf8"));
+      this.data = JSON.parse(await readFile("./data/aggregatedData.json", "utf8"));
     } else {
       // refreshData is true - requery systems and update aggregatedData.json file.
 
@@ -369,22 +371,150 @@ export class TroopTrack {
   } 
 
   async getCalendar(startDate, endDate) {
+    // Always get TroopTrack Session Token
+    {
+      var my_params = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Partner-Token': this.partnerToken,
+          'X-Username': this.username,
+          'X-User-Password': this.password
+        }
+      };
+      var result = await this.call_API('post','/api/v1/tokens',my_params);
+      this.sessionToken = await result.users[0].token;
+    } 
+
+    // Convert startDate and endDate to string if they are Date objects
+    const formattedStartDate = startDate instanceof Date ? startDate.toISOString().split('T')[0] : startDate;
+    const formattedEndDate = endDate instanceof Date ? endDate.toISOString().split('T')[0] : endDate;
+
+    // GET EVENT DETAILS
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'X-Partner-Token': this.partnerToken,
-      'X-User-Token': await this.sessionToken
+      'X-User-Token': this.sessionToken
       
     };
-    var searchString = this.url + '/api/v1/events?start_on=' + startDate + '&end_on=' + endDate;
+
+    var searchString = this.url + '/api/v1/events?start_on=' + formattedStartDate + '&end_on=' + formattedEndDate;
 
     try {
-      const response = await axios.get(searchString, { headers: headers });
-      return await response.data;
+      var response = await axios.get(searchString, { headers: headers });
+      response = await response.data;
     } catch (error) {
-      throw new Error('Error obtaining TroopTrack Session Token: ${error}');
+      throw new Error(`${error}`);
     }
+
+    // Parse the JSON response to get the events array
+    var events = (typeof response === 'string') ? JSON.parse(response.events) : response.events;
+
+    // Ensure events is iterable
+    if (!Array.isArray(events)) {
+        throw new Error('Events is not an array');
+    }
+
+    // GET EVENT DETAILS
+    const results = [];
+    for (const event of events) {
+      try {
+        var searchString = this.url + `/api/v1/events/${event.event_id}`;
+        response = await axios.get(searchString, { headers: headers });
+        results.push(response.data.event);
+      } catch (error) {
+        console.error(`Error fetching event ${event.event_id}:`, error);
+      }
+    }
+
+    return results;
   }
+
+
+  async getPodcastData(startDate) {
+    const [year, month, day] = startDate.split('-').map(Number);
+
+    // Create a date at noon to avoid time zone issues
+    const nextTuesday = new Date(year, month - 1, day, 12);
+    const nextWednesday = new Date(nextTuesday.getTime() + 1 * 24 * 60 * 60 * 1000);
+    const oneWeekAfterNextTuesday = new Date(nextTuesday.getTime() + 8 * 24 * 60 * 60 * 1000);
+    const fourWeeksAfterNextTuesday = new Date(nextTuesday.getTime() + 4 * 7 * 24 * 60 * 60 * 1000);
+
+    const oneYearFromNextTuesday = new Date(nextTuesday);
+    oneYearFromNextTuesday.setFullYear(nextTuesday.getFullYear() + 1);
+
+    // Assuming getCalendar is an existing function in the module
+    const results = await this.getCalendar(nextTuesday, oneYearFromNextTuesday);  // 12 months of events
+
+    // Filter events
+    const nextWeeksEvents = [];
+    const eventsRequiringRsvp = [];
+
+    function parseDate(dateStr) {
+      return dateStr ? new Date(dateStr) : null;
+    }
+
+    for (const event of results) {
+      const activityAt = parseDate(event.activity_at);
+      const rsvpDeadline = parseDate(event.rsvp_deadline);
+
+      if (activityAt > nextWednesday && activityAt <= oneWeekAfterNextTuesday) {
+          nextWeeksEvents.push(event);
+      }
+
+      if (rsvpDeadline > nextTuesday && rsvpDeadline <= fourWeeksAfterNextTuesday) {
+          eventsRequiringRsvp.push(event);
+      }
+    }
+
+    function formatDateToMMMDD(dateStr) {
+      if (!dateStr) return '';
+  
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // Convert events to markdown format
+    function eventsToMarkdown(title, events, myURL) {
+      const header = `# ${title}\n`;
+      if (title === 'RSVP Deadlines') {
+        events.sort((a, b) => {
+          const dateA = new Date(a.rsvp_deadline);
+          const dateB = new Date(b.rsvp_deadline);
+          return dateA - dateB;
+        });
+        
+        const eventList = events.map(event => {
+          const formattedDate = formatDateToMMMDD(event.activity_at);
+            const formattedDateRSVP = formatDateToMMMDD(event.rsvp_deadline);
+            return `- **${formattedDateRSVP}**: ${event.title} (Event on ${formattedDate})`;
+        }).join('\n');
+        return `${header}${eventList}`;
+      } else if (title === 'Next Week\'s Activities') {
+        const eventList = events.map(event => {
+          const formattedDate = formatDateToMMMDD(event.activity_at);
+          return `- ${formattedDate}: ${event.title}`;
+        }).join('\n');
+        return `${header}${eventList}`;
+      } else if (title === 'Related Links') {
+        const eventList = events.map(event => {
+          return `- [${event.title}](${myURL}/plan/events/${event.event_id})`;
+        }).join('\n');
+        return `${header}${eventList}`;
+      }
+    }
+
+    const rsvpRemindersMarkdown = eventsToMarkdown('RSVP Deadlines', eventsRequiringRsvp, this.url);
+    const nextWeekActivitiesMarkdown = eventsToMarkdown('Next Week\'s Activities', nextWeeksEvents, this.url);
+    const linkListMarkdown = eventsToMarkdown('Related Links', eventsRequiringRsvp, this.url);
+    
+    // Combine both markdown strings
+    const combinedMarkdown = `${rsvpRemindersMarkdown}\n\n${nextWeekActivitiesMarkdown}\n\n${linkListMarkdown}`;
+
+    // Copy to clipboard
+    clipboardy.writeSync(combinedMarkdown);
+}
 
   async sendEmail(msgArray) {
     const browser = await puppeteer.launch({headless: false});
