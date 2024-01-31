@@ -4,15 +4,27 @@
   "description": "This respository contains tools to extend the capabilities of TroopTrack to add additional functionality. The intention is to support processes at Troop 457 in Zelienople, PA; however any TroopTrack user may utilize these tools to support their own Troops.",
   "main": "TTDataAggregation.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel index.html",
+    "build": "parcel build index.html"
   },
   "author": "Tim Maloney",
   "type": "module",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.4.0",
+    "axios": "^1.6.3",
+    "clipboardy": "^4.0.0",
+    "csv-parser": "^3.0.0",
     "dotenv": "^16.0.3",
+    "html-tablify": "^2.0.4",
+    "json2csv": "^6.0.0-alpha.2",
     "minimist": "^1.2.8",
-    "puppeteer": "^19.9.1"
+    "puppeteer": "^19.9.1",
+    "rss-parser": "^3.13.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.10.3",
+    "parcel-bundler": "^1.12.5",
+    "path-browserify": "^1.0.1"
   }
 }
