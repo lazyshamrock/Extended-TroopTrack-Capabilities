@@ -3,14 +3,11 @@
 .env
 
 # Directories
-node_modules/
-.vscode/
 .cache/
 .github/
-.parcel-cache/
-Node_modules/
+.vscode/
 data/
-dist/
+node_modules/
 WORKING/
 
 # Specific Files
