@@ -1,3 +1,5 @@
+> 🚨🚨 **ARCHIVE ALERT** 🚨🚨<br>This repository is being migrated to the [TroopMgmt-CLI](https://github.com/lazyshamrock/TroopMgmt-CLI) tool.  The code has been archived and will no longer be developed in this repository.
+
 # Extended TroopTrack Capabilities
  This respository contains tools to extend the capabilities of TroopTrack to add additional functionality.  The intention is to support processes at Troop 457 in Zelienople, PA; however any TroopTrack user may utilize these tools to support their own Troops.
 
@@ -19,6 +21,7 @@ The functionality within this repository uses (or will use) the following toolse
 | :-----: | ----------- |
 | 0       | Initial Publication of README and proposed roadmap |
 | 1       | Release of Data Aggregation code |
+| 2       | Introduced Command Line Interface |
 
 ## Roadmap
 Below is a listing of capabilities that I expect to add using the code/tools in this repository:

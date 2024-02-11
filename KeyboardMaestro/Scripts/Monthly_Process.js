@@ -1,6 +1,6 @@
 // ===== IMPORT STATEMENTS =====
-import { TroopTrack } from './TroopTrack.mjs';
-import { WordPress } from './WordPress.mjs';
+import { TroopTrack } from '../../scripts/TroopTrack.mjs';
+import { WordPress } from '../../scripts/WordPress.mjs';
 
 // ===== SCOUTBOOK  =====
 /* Pull Data from Scoutbook to reconcile to TroopTrack

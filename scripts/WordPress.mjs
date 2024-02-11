@@ -27,7 +27,7 @@ export class WordPress {
     this.tnlp_activeFamilies = 1;
     this.tnlp_EagleScouts = 2;
     this.tnlp_MBC = 10;
-    this.tnlp_Alumni = 3;                     // FIXME: Change to List 8 after initial run.
+    this.tnlp_Alumni = 8;
   }
 
   // ***** createPost *****
