@@ -5,7 +5,7 @@ import { TroopTrack } from './TroopTrack.mjs';
 
 // ===== CREATE TROOPTRACK OBJECT =====
 const tt = new TroopTrack();
-await tt.getPodcastData('2024-01-30');
+await tt.getPodcastData('2024-02-06');
 
 /*
 // This will get the command line arguments
